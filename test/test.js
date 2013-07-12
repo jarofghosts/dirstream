@@ -26,8 +26,8 @@ a._write = function (file, enc, next) {
 };
 
 rs._read = function () {
-  rs.push(__dirname + '/test/dir');
-  rs.push(__dirname + '/test/dir2');
+  rs.push(__dirname + '/dir');
+  rs.push(__dirname + '/dir2');
   rs.push(null);
 };
 
