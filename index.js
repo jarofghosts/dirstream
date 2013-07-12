@@ -1,6 +1,5 @@
 var through = require('through'),
     lsstream = require('ls-stream'),
-    fs = require('fs'),
     ls = null;
 
 module.exports = dirstream;
@@ -13,36 +12,28 @@ function dirstream() {
   function write(buf) {
     arr.push(buf.toString().trim());
     if (!ls) {
-      processDir(arr.shift(), true);
+      processDir(arr.shift());
     }
   }
 
-  function processDir(dir, listen) {
+  function processDir(dir) {
 
-    fs.exists(dir, function (exists) {
+    ls = lsstream(dir);
 
-      if (!exists) return
+    ls.on('data', function (data) {
+      tr.queue(data.path);
+    });
 
-      ls = lsstream(dir);
-
-      if (listen) {
-        ls.on('data', function (data) {
-          tr.queue(data.path);
-        });
-
-        ls.on('end', function () {
-          if (!arr.length) {
-            ls = null;
-          } else {
-            processDir(arr.shift(), false);
-          }
-        });
-
-        ls.on('error', function () {
-          // no-op currently
-        });
+    ls.on('end', function () {
+      if (!arr.length) {
+        ls = null;
+      } else {
+        processDir(arr.shift());
       }
+    });
 
+    ls.on('error', function () {
+      // no-op currently
     });
 
   }

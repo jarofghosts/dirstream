@@ -5,8 +5,7 @@ var dir = require('../index.js'),
     Writable = stream.Writable,
     rs = Readable(),
     a = Writable({ decodeStrings: false }),
-    output = [],
-    go = true;
+    output = [];
 
 a._write = function (file, enc, next) {
   output.push(file);
@@ -18,15 +17,10 @@ a.end = function () {
 };
 
 rs._read = function () {
-  if (go) {
-    rs.push(process.cwd() + 'dir/');
-    go = false;
-  } else {
-    rs.push(null);
-  }
-}
+  rs.push(process.cwd() + '/dir');
+  rs.push(process.cwd() + '/dir2');
+  rs.push(null);
+};
 
-rs.pipe(dir()).pipe(a);
+rs.pipe(dir()).pipe(process.stdout);
 
-//rs.push('./dir/');
-//rs.push(null);
