@@ -1,0 +1,23 @@
+{
+  "name": "dirstream",
+  "version": "0.0.0",
+  "description": "stream filenames",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jarofghosts/dirstream.git"
+  },
+  "keywords": [
+    "ls",
+    "stream",
+    "files"
+  ],
+  "author": "jesse keane",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jarofghosts/dirstream/issues"
+  }
+}
