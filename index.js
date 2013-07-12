@@ -13,17 +13,16 @@ function dirstream() {
   function write(buf) {
     arr.push(buf.toString().trim());
     if (!ls) {
-      processDir(arr.shift());
+      processDir(arr.shift(), true);
     }
   }
 
-  function processDir(dir) {
+  function processDir(dir, listen) {
 
     fs.exists(dir, function (exists) {
 
       if (!exists) return
 
-      var listen = !ls;
       ls = lsstream(dir);
 
       if (listen) {
@@ -35,7 +34,7 @@ function dirstream() {
           if (!arr.length) {
             ls = null;
           } else {
-            processDir(arr.shift());
+            processDir(arr.shift(), false);
           }
         });
 
