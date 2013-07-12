@@ -19,5 +19,9 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jarofghosts/dirstream/issues"
+  },
+  "dependencies": {
+    "ls-stream": "0.0.3",
+    "through": "~2.3.4"
   }
 }
