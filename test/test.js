@@ -7,13 +7,22 @@ var dir = require('../index.js'),
     a = Writable({ decodeStrings: false }),
     output = [];
 
+function finish() {
+  assert.ok(output[0].match(/dir\/.test$/));
+  assert.ok(output[1].match(/dir\/blah$/));
+  assert.ok(output[2].match(/dir\/dodo.txt$/));
+  assert.ok(output[3].match(/dir2\/bleh$/));
+  assert.ok(output[4].match(/dir2\/subdir$/));
+  assert.ok(output[5].match(/dir2\/subdir\/weeee$/));
+}
+
 a._write = function (file, enc, next) {
   output.push(file);
-  next();
-};
-
-a.end = function () {
-  console.log(output);
+  if (output.length < 6) {
+    next();
+  } else {
+    finish();
+  }
 };
 
 rs._read = function () {
@@ -22,5 +31,5 @@ rs._read = function () {
   rs.push(null);
 };
 
-rs.pipe(dir()).pipe(process.stdout);
+rs.pipe(dir()).pipe(a);
 
