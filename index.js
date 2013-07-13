@@ -4,7 +4,9 @@ var through = require('through'),
 
 module.exports = dirstream;
 
-function dirstream() {
+function dirstream(options) {
+
+  options = options || {};
 
   var arr = [],
       tr = through(write, end);
@@ -21,7 +23,7 @@ function dirstream() {
     ls = lsstream(dir);
 
     ls.on('data', function (data) {
-      tr.queue(data.path);
+      if (!options.onlyFiles || !data.stat.isDirectory()) tr.queue(data.path);
     });
 
     ls.on('end', function () {
