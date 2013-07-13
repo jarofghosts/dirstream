@@ -1,10 +1,10 @@
 {
   "name": "dir-stream",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "stream filenames",
   "main": "index.js",
   "scripts": {
-    "test": "node test/test.js"
+    "test": "node test/test.js && node test/only-file.js"
   },
   "repository": {
     "type": "git",
