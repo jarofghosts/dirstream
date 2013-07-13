@@ -1,5 +1,6 @@
 var through = require('through'),
     lsstream = require('ls-stream'),
+    path = require('path'),
     ls = null;
 
 module.exports = dirstream;
@@ -23,7 +24,9 @@ function dirstream(options) {
     ls = lsstream(dir);
 
     ls.on('data', function (data) {
-      if (!options.onlyFiles || !data.stat.isDirectory()) tr.queue(data.path);
+      if (options.onlyFiles && data.stat.isDirectory()) return
+      if (options.noRecurse && path.dirname(data.path) != dir) return
+      tr.queue(data.path);
     });
 
     ls.on('end', function () {

@@ -1,10 +1,10 @@
 {
   "name": "dir-stream",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "stream filenames",
   "main": "index.js",
   "scripts": {
-    "test": "node test/test.js && node test/only-file.js"
+    "test": "node test/test.js && node test/only-file.js && node test/no-recurse.js"
   },
   "repository": {
     "type": "git",
