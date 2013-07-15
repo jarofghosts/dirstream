@@ -25,7 +25,7 @@ function dirstream(options) {
 
     ls.on('data', function (data) {
       if (options.onlyFiles && data.stat.isDirectory()) return
-      //if (options.noRecurse && path.dirname(data.path) != dir) return
+      if (options.noRecurse && path.dirname(data.path) != dir) return
       if (options.ignore && (options.ignore.indexOf(data.path) !== -1 || options.ignore.indexOf(path.dirname(data.path)) !== -1)) return
       tr.queue(data.path);
     });
