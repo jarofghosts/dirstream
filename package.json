@@ -4,7 +4,7 @@
   "description": "stream filenames",
   "main": "index.js",
   "scripts": {
-    "test": "node test/test.js && node test/only-file.js && node test/no-recurse.js"
+    "test": "node test/test.js && node test/only-file.js && node test/no-recurse.js && node test/ignore-dir.js"
   },
   "repository": {
     "type": "git",
