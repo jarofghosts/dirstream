@@ -25,6 +25,7 @@ function dirstream(options) {
 
     ls.on('data', function (data) {
       if (!data.stat) return;
+      if (options.ignoreExtensions && (options.ignoreExtensions.indexOf(path.extname(data.path).substring(1)) !== -1)) return;
       if (options.onlyFiles && data.stat.isDirectory()) return;
       if (options.noRecurse && path.dirname(data.path) != dir) return;
       if (options.ignore && (options.ignore.indexOf(data.path) !== -1 || options.ignore.indexOf(path.dirname(data.path)) !== -1)) return;
