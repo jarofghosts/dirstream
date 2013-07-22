@@ -29,6 +29,14 @@ function dirstream(options) {
       if (options.onlyFiles && data.stat.isDirectory()) return;
       if (options.noRecurse && path.dirname(data.path) != dir) return;
       if (options.ignore && (options.ignore.indexOf(data.path) !== -1 || options.ignore.indexOf(path.dirname(data.path)) !== -1)) return;
+      if (options.ignore) {
+        var dirs = data.path.split(path.sep),
+            i = 0,
+            l = dirs.length;
+        for (; i < l; ++i) {
+          if (options.ignore.indexOf(dirs[i]) !== -1) return;
+        }
+      }
       tr.queue(data.path);
     });
 
