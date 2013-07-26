@@ -10,6 +10,7 @@ given a stream of directory names, will output a stream of all contents of that 
 optionally, you can pass a configuration object to the function with options:
 ```js
 {
+  ignoreExtensions: ['exe'], // don't stream filenames with extensions listed
   onlyFiles: false,
   noRecurse: false
 }
