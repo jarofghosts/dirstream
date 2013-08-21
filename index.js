@@ -14,9 +14,7 @@ function dirstream(options) {
 
   function write(buf) {
     arr.push(buf.toString().trim());
-    if (!ls) {
-      processDir(arr.shift());
-    }
+    if (!ls) processDir(arr.shift());
   }
 
   function processDir(dir) {
