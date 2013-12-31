@@ -21,33 +21,33 @@ function dirstream(options) {
   function processDir(dir) {
     ls = lsstream(dir)
 
-    ls.on('data', function (data) {
-      if (!data.stat) return
+    ls.on('data', process_dir)
 
-      if (options.ignoreExtensions &&
+    function process_dir(data) {
+      if (options.noRecurse) data.ignore()
+
+      if (!data.stat ||
+      (options.ignoreExtensions &&
         (options.ignoreExtensions.indexOf(
-          path.extname(data.path).slice(1)) !== -1)) return
+          path.extname(data.path).slice(1)) !== -1)) ||
+      (options.onlyFiles && data.stat.isDirectory())) return
+      // take that, readability
 
-      if (options.onlyFiles && data.stat.isDirectory()) return
-
-      if (options.noRecurse) {
-        data.ignore()
-      }
-
-      if (options.ignore &&
-        (options.ignore.indexOf(data.path) !== -1 ||
-          options.ignore.indexOf(path.dirname(data.path)) !== -1)) return
       if (options.ignore) {
+        if (options.ignore.indexOf(data.path) !== -1 ||
+          options.ignore.indexOf(path.dirname(data.path)) !== -1) return
+
         var dirs = data.path.split(path.sep),
             i = 0,
             l = dirs.length
+
         for (; i < l; ++i) {
           if (options.ignore.indexOf(dirs[i]) !== -1) return
         }
       }
 
       tr.queue(data.path)
-    })
+    }
 
     ls.on('end', function () {
       if (!arr.length) return tr.queue(null)
