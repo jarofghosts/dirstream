@@ -1,60 +1,59 @@
-var through = require('through'),
-    lsstream = require('ls-stream'),
-    path = require('path'),
-    ls = null
+var path = require('path')
+
+var lsstream = require('ls-stream')
+  , through = require('through')
+
+var ls = null
 
 module.exports = dirstream
 
-function dirstream(options) {
-  var arr = [],
-      tr = through(write, noop)
+function dirstream(_options) {
+  var stream = through(write, noop)
+    , arr = [],
 
-  options = options || {}
+  options = _options || {}
 
-  return tr
+  return stream
 
   function write(buf) {
     arr.push(buf.toString().trim())
-    if (!ls) processDir(arr.shift())
+    if(!ls) do_dir(arr.shift())
   }
 
-  function processDir(dir) {
+  function do_dir(dir) {
     ls = lsstream(dir)
 
     ls.on('data', process_dir)
+      .on('end', next_dir)
+      .on('error', noop)
 
     function process_dir(data) {
-      if (options.noRecurse) data.ignore()
+      if(options.noRecurse) data.ignore()
 
-      if (!data.stat ||
-      (options.ignoreExtensions &&
+      if(!data.stat || (options.ignoreExtensions &&
         (options.ignoreExtensions.indexOf(
           path.extname(data.path).slice(1)) !== -1)) ||
       (options.onlyFiles && data.stat.isDirectory())) return
       // take that, readability
 
-      if (options.ignore) {
-        if (options.ignore.indexOf(data.path) !== -1 ||
+      if(options.ignore) {
+        if(options.ignore.indexOf(data.path) !== -1 ||
           options.ignore.indexOf(path.dirname(data.path)) !== -1) return
 
-        var dirs = data.path.split(path.sep),
-            i = 0,
-            l = dirs.length
+        var dirs = data.path.split(path.sep)
 
-        for (; i < l; ++i) {
-          if (options.ignore.indexOf(dirs[i]) !== -1) return
+        for(var i = 0, l = dirs.length; i < l; ++i) {
+          if(options.ignore.indexOf(dirs[i]) !== -1) return
         }
       }
 
-      tr.queue(data.path)
+      stream.queue(data.path)
     }
 
-    ls.on('end', function () {
-      if (!arr.length) return tr.queue(null)
-      processDir(arr.shift())
-    })
-
-    ls.on('error', noop)
+    function next_dir() {
+      if(!arr.length) return stream.queue(null)
+      do_dir(arr.shift())
+    }
   }
 }
 
