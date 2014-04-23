@@ -1,6 +1,6 @@
 {
   "name": "dir-stream",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "stream filenames",
   "main": "index.js",
   "scripts": {
