@@ -3,20 +3,19 @@ var path = require('path')
 var lsstream = require('ls-stream')
   , through = require('through')
 
-var ls = null
-
 module.exports = dirstream
 
 function dirstream(_options) {
   var stream = through(write, noop)
-    , arr = [],
+    , ls = null
+    , arr = []
 
   options = _options || {}
 
   return stream
 
   function write(buf) {
-    arr.push(buf.toString().trim())
+    arr.push(('' + buf).trim())
     if(!ls) do_dir(arr.shift())
   }
 
