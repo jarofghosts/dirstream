@@ -9,6 +9,7 @@ function dirstream(_options) {
   var stream = through(write, noop)
     , ls = null
     , arr = []
+    , options
 
   options = _options || {}
 
