@@ -4,7 +4,7 @@
   "description": "stream filenames",
   "main": "index.js",
   "scripts": {
-    "test": "node test/test.js && node test/only-file.js && node test/no-recurse.js && node test/ignore-dir.js && node test/ignore-files.js"
+    "test": "node test/index.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,10 @@
     "url": "https://github.com/jarofghosts/dirstream/issues"
   },
   "dependencies": {
-    "ls-stream": "1.0.0",
-    "through": "~2.3.4"
+    "ls-stream": "^1.0.0",
+    "through": "^2.3.4"
+  },
+  "devDependencies": {
+    "tape": "^2.13.1"
   }
 }

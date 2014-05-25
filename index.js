@@ -6,10 +6,10 @@ var lsstream = require('ls-stream')
 module.exports = dirstream
 
 function dirstream(_options) {
-  var stream = through(write, next_dir)
-    , ls = null
+  var stream = through(write, end)
     , arr = []
     , options
+    , ls
 
   options = _options || {}
 
@@ -30,31 +30,35 @@ function dirstream(_options) {
       })
 
     function process_dir(data) {
+      var dirs
+
       if(options.noRecurse) data.ignore()
 
-      if(!data.stat || (options.ignoreExtensions &&
-        (options.ignoreExtensions.indexOf(
-          path.extname(data.path).slice(1)) !== -1)) ||
-      (options.onlyFiles && data.stat.isDirectory())) return
-      // take that, readability
+      if(!data.stat || options.onlyFiles && data.stat.isDirectory()) return
+      if(options.ignoreExtensions &&
+         options.ignoreExtensions.indexOf(
+             path.extname(data.path).slice(1)
+         ) > -1) return
 
-      if(options.ignore) {
-        if(options.ignore.indexOf(data.path) !== -1 ||
-          options.ignore.indexOf(path.dirname(data.path)) !== -1) return
+      if(options.ignore && (options.ignore.indexOf(data.path) !== -1 ||
+         options.ignore.indexOf(path.dirname(data.path)) !== -1)) return
 
-        var dirs = data.path.split(path.sep)
+        dirs = data.path.split(path.sep)
 
         for(var i = 0, l = dirs.length; i < l; ++i) {
-          if(options.ignore.indexOf(dirs[i]) !== -1) return
+          if(options.ignore && options.ignore.indexOf(dirs[i]) !== -1) return
         }
-      }
 
-      stream.queue(data.path)
+        stream.queue(data.path)
+      }
     }
+
+  function end() {
+    if(!ls) stream.queue(null)
   }
 
   function next_dir() {
-    if(!arr.length || !ls) return stream.queue(null)
+    if(!arr.length) return stream.queue(null)
 
     do_dir(arr.shift())
   }
