@@ -6,7 +6,7 @@ var lsstream = require('ls-stream')
 module.exports = dirstream
 
 function dirstream(_options) {
-  var stream = through(write, noop)
+  var stream = through(write, next_dir)
     , ls = null
     , arr = []
     , options
@@ -25,7 +25,9 @@ function dirstream(_options) {
 
     ls.on('data', process_dir)
       .on('end', next_dir)
-      .on('error', noop)
+      .on('error', function(err) {
+        stream.emit('error', err)
+      })
 
     function process_dir(data) {
       if(options.noRecurse) data.ignore()
@@ -49,12 +51,11 @@ function dirstream(_options) {
 
       stream.queue(data.path)
     }
+  }
 
-    function next_dir() {
-      if(!arr.length) return stream.queue(null)
-      do_dir(arr.shift())
-    }
+  function next_dir() {
+    if(!arr.length || !ls) return stream.queue(null)
+
+    do_dir(arr.shift())
   }
 }
-
-function noop(){}
