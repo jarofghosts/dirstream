@@ -17,26 +17,25 @@ function dirstream(_options) {
 
   function write(buf) {
     arr.push(('' + buf).trim())
-    if(!ls) do_dir(arr.shift())
+    if(!ls) start(arr.shift())
   }
 
-  function do_dir(dir) {
+  function start(dir) {
     ls = lsstream(dir)
 
-    ls.on('data', process_dir)
-      .on('end', next_dir)
+    ls.on('data', processDir)
+      .on('end', nextDir)
       .on('error', function(err) {
         stream.emit('error', err)
       })
 
-    function process_dir(data) {
+    function processDir(data) {
       var dirs
 
       if(options.noRecurse) data.ignore()
 
       if(!data.stat || options.onlyFiles && data.stat.isDirectory()) return
-      if(options.ignoreExtensions &&
-         options.ignoreExtensions.indexOf(
+      if(options.ignoreExtensions && options.ignoreExtensions.indexOf(
              path.extname(data.path).slice(1)
          ) > -1) return
 
@@ -57,9 +56,9 @@ function dirstream(_options) {
     if(!ls) stream.queue(null)
   }
 
-  function next_dir() {
+  function nextDir() {
     if(!arr.length) return stream.queue(null)
 
-    do_dir(arr.shift())
+    start(arr.shift())
   }
 }
