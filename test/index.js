@@ -11,7 +11,7 @@ test('streams files and dirs recursively', function(t) {
     , output = []
 
   stream.on('data', function(data) {
-    output.push(path.relative(__dirname, data))
+    output.push(path.relative(__dirname, data.toString()))
   })
 
   stream.on('end', function() {
@@ -36,7 +36,7 @@ test('streams files only if option set', function(t) {
     , output = []
 
   stream.on('data', function(data) {
-    output.push(path.relative(__dirname, data))
+    output.push(path.relative(__dirname, data.toString()))
   })
 
   stream.on('end', function() {
@@ -60,7 +60,7 @@ test('does not recurse if option set', function(t) {
     , output = []
 
   stream.on('data', function(data) {
-    output.push(path.relative(__dirname, data))
+    output.push(path.relative(__dirname, data.toString()))
   })
 
   stream.on('end', function() {
@@ -84,7 +84,7 @@ test('can ignore extensions', function(t) {
     , output = []
 
   stream.on('data', function(data) {
-    output.push(path.relative(__dirname, data))
+    output.push(path.relative(__dirname, data.toString()))
   })
 
   stream.on('end', function() {
@@ -108,7 +108,7 @@ test('can ignore dirs', function(t) {
     , output = []
 
   stream.on('data', function(data) {
-    output.push(path.relative(__dirname, data))
+    output.push(path.relative(__dirname, data.toString()))
   })
 
   stream.on('end', function() {
