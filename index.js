@@ -1,70 +1,65 @@
 var path = require('path')
 
 var lsstream = require('ls-stream')
-  , through = require('through2')
+var through = require('through2')
 
 module.exports = dirstream
 
-function dirstream(_options) {
+function dirstream (_options) {
+  var options = _options || {}
   var stream = through(write)
-    , arr = []
+  var queue = []
+  var ignore = options.ignore || []
+  var ignoreExtensions = options.ignoreExtensions || []
 
-  var ignoreExtensions
-    , options
-    , ignore
-    , ls
-
-  options = _options || {}
-
-  ignore = options.ignore || []
-  ignoreExtensions = options.ignoreExtensions || []
+  var ls
 
   return stream
 
-  function write(buf, enc, next) {
-    arr.push(buf.toString().trim())
+  function write (buf, _, next) {
+    queue.push(buf.toString().trim())
 
-    if(!ls) {
-      start(arr.shift())
+    if (!ls) {
+      start(queue.shift())
     }
 
     next()
   }
 
-  function start(dir) {
+  function start (dir) {
     ls = lsstream(dir)
 
     ls.on('data', processDir)
       .on('end', nextDir)
-      .on('error', function(err) {
+      .on('error', function (err) {
         stream.emit('error', err)
       })
 
-    function processDir(data) {
+    function processDir (data) {
       var extension = path.extname(data.path).slice(1)
       var dirname = path.dirname(data.path)
       var dirs
 
-      if(options.noRecurse) {
+      if (options.noRecurse) {
         data.ignore()
       }
 
-      if(!data.stat || options.onlyFiles && data.stat.isDirectory()) {
+      if (!data.stat || options.onlyFiles && data.stat.isDirectory()) {
         return
       }
 
-      if(ignoreExtensions.indexOf(extension) > -1) {
+      if (ignoreExtensions.indexOf(extension) > -1) {
         return
       }
 
-      if(ignore.indexOf(data.path) !== -1 || ignore.indexOf(dirname) !== -1) {
+      if (ignore.indexOf(data.path) !== -1 || ignore.indexOf(dirname) !== -1) {
         return
       }
 
       dirs = data.path.split(path.sep)
 
-      for(var i = 0, l = dirs.length; i < l; ++i) {
-        if(ignore.indexOf(dirs[i]) !== -1) {
+      for (var i = 0, l = dirs.length; i < l; ++i) {
+        if (ignore.indexOf(dirs[i]) !== -1) {
           return
         }
       }
@@ -72,12 +67,12 @@ function dirstream(_options) {
       stream.push(data.path)
     }
 
-    function nextDir() {
-      if(!arr.length) {
+    function nextDir () {
+      if (!queue.length) {
         return stream.push(null)
       }
 
-      start(arr.shift())
+      start(queue.shift())
     }
   }
 }

@@ -4,24 +4,24 @@ var test = require('tape')
 
 var dir = require('../')
 
-test('streams files and dirs recursively', function(t) {
+test('streams files and dirs recursively', function (t) {
   t.plan(1)
 
   var stream = dir()
-    , output = []
+  var output = []
 
-  stream.on('data', function(data) {
+  stream.on('data', function (data) {
     output.push(path.relative(__dirname, data.toString()))
   })
 
-  stream.on('end', function() {
+  stream.on('end', function () {
     t.deepEqual([
-        'dir/.test'
-      , 'dir/blah'
-      , 'dir/dodo.txt'
-      , 'dir2/bleh'
-      , 'dir2/subdir'
-      , 'dir2/subdir/weeee'
+      'dir/.test',
+      'dir/blah',
+      'dir/dodo.txt',
+      'dir2/bleh',
+      'dir2/subdir',
+      'dir2/subdir/weeee'
     ], output)
   })
 
@@ -29,23 +29,23 @@ test('streams files and dirs recursively', function(t) {
   stream.write(path.join(__dirname, 'dir2'))
 })
 
-test('streams files only if option set', function(t) {
+test('streams files only if option set', function (t) {
   t.plan(1)
 
   var stream = dir({onlyFiles: true})
-    , output = []
+  var output = []
 
-  stream.on('data', function(data) {
+  stream.on('data', function (data) {
     output.push(path.relative(__dirname, data.toString()))
   })
 
-  stream.on('end', function() {
+  stream.on('end', function () {
     t.deepEqual([
-        'dir/.test'
-      , 'dir/blah'
-      , 'dir/dodo.txt'
-      , 'dir2/bleh'
-      , 'dir2/subdir/weeee'
+      'dir/.test',
+      'dir/blah',
+      'dir/dodo.txt',
+      'dir2/bleh',
+      'dir2/subdir/weeee'
     ], output)
   })
 
@@ -53,23 +53,23 @@ test('streams files only if option set', function(t) {
   stream.write(path.join(__dirname, 'dir2'))
 })
 
-test('does not recurse if option set', function(t) {
+test('does not recurse if option set', function (t) {
   t.plan(1)
 
   var stream = dir({noRecurse: true})
-    , output = []
+  var output = []
 
-  stream.on('data', function(data) {
+  stream.on('data', function (data) {
     output.push(path.relative(__dirname, data.toString()))
   })
 
-  stream.on('end', function() {
+  stream.on('end', function () {
     t.deepEqual([
-        'dir/.test'
-      , 'dir/blah'
-      , 'dir/dodo.txt'
-      , 'dir2/bleh'
-      , 'dir2/subdir'
+      'dir/.test',
+      'dir/blah',
+      'dir/dodo.txt',
+      'dir2/bleh',
+      'dir2/subdir'
     ], output)
   })
 
@@ -77,23 +77,23 @@ test('does not recurse if option set', function(t) {
   stream.write(path.join(__dirname, 'dir2'))
 })
 
-test('can ignore extensions', function(t) {
+test('can ignore extensions', function (t) {
   t.plan(1)
 
   var stream = dir({ignoreExtensions: ['txt']})
-    , output = []
+  var output = []
 
-  stream.on('data', function(data) {
+  stream.on('data', function (data) {
     output.push(path.relative(__dirname, data.toString()))
   })
 
-  stream.on('end', function() {
+  stream.on('end', function () {
     t.deepEqual([
-        'dir/.test'
-      , 'dir/blah'
-      , 'dir2/bleh'
-      , 'dir2/subdir'
-      , 'dir2/subdir/weeee'
+      'dir/.test',
+      'dir/blah',
+      'dir2/bleh',
+      'dir2/subdir',
+      'dir2/subdir/weeee'
     ], output)
   })
 
@@ -101,21 +101,21 @@ test('can ignore extensions', function(t) {
   stream.write(path.join(__dirname, 'dir2'))
 })
 
-test('can ignore dirs', function(t) {
+test('can ignore dirs', function (t) {
   t.plan(1)
 
   var stream = dir({ignore: ['dir2']})
-    , output = []
+  var output = []
 
-  stream.on('data', function(data) {
+  stream.on('data', function (data) {
     output.push(path.relative(__dirname, data.toString()))
   })
 
-  stream.on('end', function() {
+  stream.on('end', function () {
     t.deepEqual([
-        'dir/.test'
-      , 'dir/blah'
-      , 'dir/dodo.txt'
+      'dir/.test',
+      'dir/blah',
+      'dir/dodo.txt'
     ], output)
   })
 
